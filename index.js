@@ -1,16 +1,19 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const cloudinary = require("cloudinary");
+const cloudinary = require("cloudinary").v2;
 const exphbs = require("express-handlebars");
 const fileUpload = require("express-fileupload");
 const mysql = require("mysql");
 
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // default option
-app.use(fileUpload());
+app.use(fileUpload({
+  useTempFiles : true,
+  limits : { fileSize : 1024 * 1024 }
+}));
 
 // Static Files
 app.use(express.static("public"));
@@ -56,20 +59,21 @@ cloudinary.config({
 });
 
 app.post("", async (req, res) => {
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send("No files were uploaded.");
-  }
+  // if (!req.files || Object.keys(req.files).length === 0) {
+  //   return res.status(400).send("No files were uploaded.");
+  // }
   // name of the input is sampleFile
   let file = req.files.sampleFile;
   let fileName = Date.now() + file.name;
   const result = await cloudinary.uploader.upload(file.tempFilePath, {
-    public_id: Date.now(),
+    public_id: fileName,
     resource_type: "auto",
-    folder: "images"
-  })
+    folder: "PembayaranKuliah/buktipembayaran"
+  });
+  // res.json(result.url);
 
   // Use mv() to place file on the server
-  if (err) return res.status(500).send(err);
+  // if (err) return res.status(500).send(err);
 
   pool.getConnection((err, connection) => {
     if (err) throw err; // not connected
