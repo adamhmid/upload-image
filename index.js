@@ -71,7 +71,7 @@ app.post("", async (req, res) => {
     folder: "PembayaranKuliah/buktipembayaran"
   });
   // res.json(result.url);
-
+  
   // Use mv() to place file on the server
   // if (err) return res.status(500).send(err);
 
